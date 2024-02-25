@@ -1,0 +1,6 @@
+Faker~=23.2.1
+SQLAlchemy~=2.0.27
+pandas
+pyopenssl
+psycopg2-binary
+Flask~=3.0.2
