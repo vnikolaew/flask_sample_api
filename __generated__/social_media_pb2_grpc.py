@@ -2,7 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-import social_media_pb2 as social__media__pb2
+from . import social_media_pb2 as social__media__pb2
 
 
 class SocialMediaStub(object):
@@ -25,9 +25,7 @@ class SocialMediaServicer(object):
     """Missing associated documentation comment in .proto file."""
 
     def GetUser(self, request, context):
-        """A simple RPC.
-
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
