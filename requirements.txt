@@ -5,3 +5,4 @@ pyopenssl
 psycopg2-binary
 Flask~=3.0.2
 grpcio-tools
+arrow

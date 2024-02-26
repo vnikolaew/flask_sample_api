@@ -19,6 +19,13 @@ def get_post(post_id: int):
         return post._asdict, 200
 
 
+@posts.get('/<int:post_id>/comments')
+def get_post_comments(post_id: int):
+    with PostService(engine) as post_service:
+        comments = post_service.get_post_comments(post_id)
+        return {'count': len(comments), 'items': comments}
+
+
 @posts.get('/')
 def get_post_summaries():
     with PostService(engine) as post_service:

@@ -1,6 +1,6 @@
 import os
 
-from flask import Blueprint, abort
+from flask import Blueprint, abort, url_for
 from sqlalchemy import create_engine
 
 from services.user_service import UserService
@@ -24,6 +24,16 @@ def get_user_summaries():
     with UserService(engine) as user_service:
         user_summaries = user_service.get_user_summaries()
         return user_summaries
+
+
+@users.get('/<int:user_id>/feed')
+def get_user_feed(user_id: int):
+    with UserService(engine) as user_service:
+        user_feed = user_service.get_user_feed(user_id=user_id)
+        for feed_entry in user_feed:
+            feed_entry['post_url'] = url_for('posts.get_post', post_id=feed_entry['post_id'])
+        return {'count': len(user_feed), 'items': list(user_feed)}
+
 
 
 @users.get('/<int:user_id>/follows/suggestions')

@@ -1,8 +1,9 @@
+import arrow
 from sqlalchemy import Engine
 from typing import Optional
 import pandas as pd
 
-from db.models import User, Follow
+from db.models import User, Follow, Post
 from services.service_base import ServiceBase
 
 
@@ -13,8 +14,29 @@ class UserService(ServiceBase):
         super().__init__(engine)
 
     def get_user(self, user_id: int) -> Optional[User]:
+        """
+        Retrieve a user by its ID
+        :param user_id: The User ID provided
+        """
+
         user = self.session.query(User).where(User.user_id == user_id).first()
         return user
+
+    def get_user_feed(self, user_id: int) -> list[dict[str, any]]:
+        following_query = self.session.query(Follow.following_user_id).where(Follow.follower_user_id == user_id)
+        following_users_df = pd.read_sql_query(following_query.statement, self.session.bind)
+
+        following_users_ids = list(following_users_df['following_user_id'].unique())
+
+        following_users_posts = self.session.query(Post).where(
+            Post.user_id.in_([int(user_id) for user_id in following_users_ids]))
+        following_users_posts_df = pd.read_sql_query(following_users_posts.statement, self.session.bind)
+        feed: pd.DataFrame = following_users_posts_df.sort_values(by=['post_date'], ascending=False).iloc[:100]
+
+        feed = feed.rename(columns={'user_id': 'author_id', 'post_date': 'timestamp'})
+        feed['timestamp_relative'] = feed['timestamp'].apply(lambda dt: arrow.get(dt).humanize(arrow.utcnow()))
+
+        return feed.to_dict(orient='records')
 
     def get_user_summaries(self):
         users_query = self.session.query(User).limit(100)

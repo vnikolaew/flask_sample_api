@@ -1,5 +1,6 @@
 from typing import Optional
 
+import arrow
 from sqlalchemy import Engine
 
 import pandas as pd
@@ -14,6 +15,17 @@ class PostService(ServiceBase):
     def get_post(self, post_id: int) -> Optional[Post]:
         post = self.session.query(Post).where(Post.post_id == post_id).first()
         return post
+
+    def get_post_comments(self, post_id: int):
+        post_comments_query = self.session.query(Comment).where(Comment.post_id == post_id)
+        post_comments_df = pd.read_sql_query(post_comments_query.statement, self.session.bind)
+        comments = post_comments_df.sort_values(
+            by=['comment_date'],
+            ascending=False).rename(
+            columns={'comment_date': 'timestamp', 'user_id': 'author_id'})
+        comments['timestamp_relative'] = comments['timestamp'].apply(lambda dt: arrow.get(dt).humanize(arrow.utcnow()))
+
+        return comments.to_dict('records')
 
     def get_post_summaries(self):
         post_query = self.session.query(Post).limit(100)
