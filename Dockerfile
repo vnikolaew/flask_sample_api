@@ -3,7 +3,7 @@ FROM python:3.9-slim-buster
 RUN apt-get update && \
     apt-get install -y openssl \
 
-LABEL authors="Victorio"
+LABEL authors="Victorio Nikolaev"
 
 WORKDIR /app
 

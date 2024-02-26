@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+option objc_class_prefix = "RTG";
+import "google/protobuf/timestamp.proto";
+
+package social_media;
+
+service SocialMedia {
+  rpc GetUser(GetUserRequest) returns (GetUserResponse) {}
+}
+
+message GetUserRequest {
+  int32 user_id = 1;
+}
+
+message User {
+  int32 user_id = 1;
+  string username = 2;
+  string email = 3;
+  google.protobuf.Timestamp join_date = 4;
+  string profile_picture_url = 5;
+  string bio = 6;
+}
+
+message GetUserResponse {
+  bool found = 1;
+  optional User user = 2;
+}
+
