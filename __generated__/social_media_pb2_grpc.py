@@ -12,12 +12,22 @@ class SocialMediaStub(object):
         """Constructor.
 
         Args:
-            channel: A grpc.Channel.
+            channel: A grpc_.Channel.
         """
         self.GetUser = channel.unary_unary(
                 '/social_media.SocialMedia/GetUser',
                 request_serializer=social__media__pb2.GetUserRequest.SerializeToString,
                 response_deserializer=social__media__pb2.GetUserResponse.FromString,
+                )
+        self.GetPost = channel.unary_unary(
+                '/social_media.SocialMedia/GetPost',
+                request_serializer=social__media__pb2.GetPostRequest.SerializeToString,
+                response_deserializer=social__media__pb2.GetPostResponse.FromString,
+                )
+        self.GetUserSummaries = channel.unary_unary(
+                '/social_media.SocialMedia/GetUserSummaries',
+                request_serializer=social__media__pb2.GetUserSummariesRequest.SerializeToString,
+                response_deserializer=social__media__pb2.GetUserSummariesResponse.FromString,
                 )
 
 
@@ -30,6 +40,18 @@ class SocialMediaServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def GetPost(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetUserSummaries(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_SocialMediaServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -37,6 +59,16 @@ def add_SocialMediaServicer_to_server(servicer, server):
                     servicer.GetUser,
                     request_deserializer=social__media__pb2.GetUserRequest.FromString,
                     response_serializer=social__media__pb2.GetUserResponse.SerializeToString,
+            ),
+            'GetPost': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetPost,
+                    request_deserializer=social__media__pb2.GetPostRequest.FromString,
+                    response_serializer=social__media__pb2.GetPostResponse.SerializeToString,
+            ),
+            'GetUserSummaries': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetUserSummaries,
+                    request_deserializer=social__media__pb2.GetUserSummariesRequest.FromString,
+                    response_serializer=social__media__pb2.GetUserSummariesResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -60,7 +92,41 @@ class SocialMedia(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/social_media.SocialMedia/GetUser',
-            social__media__pb2.GetUserRequest.SerializeToString,
-            social__media__pb2.GetUserResponse.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+                                              social__media__pb2.GetUserRequest.SerializeToString,
+                                              social__media__pb2.GetUserResponse.FromString,
+                                              options, channel_credentials,
+                                              insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def GetPost(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/social_media.SocialMedia/GetPost',
+                                              social__media__pb2.GetPostRequest.SerializeToString,
+                                              social__media__pb2.GetPostResponse.FromString,
+                                              options, channel_credentials,
+                                              insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def GetUserSummaries(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/social_media.SocialMedia/GetUserSummaries',
+                                              social__media__pb2.GetUserSummariesRequest.SerializeToString,
+                                              social__media__pb2.GetUserSummariesResponse.FromString,
+                                              options, channel_credentials,
+                                              insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

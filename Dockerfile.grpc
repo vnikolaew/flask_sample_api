@@ -1,0 +1,15 @@
+FROM python:3.9-slim-buster
+
+LABEL authors="Victorio Nikolaev"
+
+RUN apt-get update
+
+WORKDIR /app
+
+COPY requirements.txt requirements.txt
+COPY . .
+
+RUN pip install -r requirements.txt
+RUN pip install grpcio-tools
+
+CMD [ "python3", "grpc_server.py"]

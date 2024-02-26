@@ -4,4 +4,4 @@ pandas~=2.2.1
 pyopenssl
 psycopg2-binary
 Flask~=3.0.2
-grpc_tools
+grpcio-tools

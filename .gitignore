@@ -164,3 +164,4 @@ cython_debug/
 # Custom
 **/*.pem
 .idea
+**/*.db
