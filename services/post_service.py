@@ -4,7 +4,7 @@ import arrow
 from sqlalchemy import Engine
 
 import pandas as pd
-from db.models import Post, Like, Comment, User
+from db.models import Post, PostLike, Comment, User, CommentLike
 from services.service_base import ServiceBase
 
 
@@ -17,7 +17,10 @@ class PostService(ServiceBase):
         return post
 
     def get_post_comments(self, post_id: int):
-        post_comments_query = self.session.query(Comment).where(Comment.post_id == post_id)
+        post_comments_query = self.session.query(Comment).where(Comment.post_id == post_id).join(
+            CommentLike,
+            CommentLike.comment_id == Comment.comment_id)
+
         post_comments_df = pd.read_sql_query(post_comments_query.statement, self.session.bind)
         comments = post_comments_df.sort_values(
             by=['comment_date'],
@@ -31,7 +34,7 @@ class PostService(ServiceBase):
         post_query = self.session.query(Post).limit(100)
         posts_df = pd.read_sql_query(post_query.statement, self.session.bind)
 
-        likes_query = self.session.query(Like.like_id, Like.post_id)
+        likes_query = self.session.query(PostLike.like_id, PostLike.post_id)
         likes_df = pd.read_sql_query(likes_query.statement, likes_query.session.bind)
 
         comments_query = self.session.query(Comment.comment_id, Comment.post_id)

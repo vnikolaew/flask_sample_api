@@ -26,11 +26,13 @@ class User(Base):
     posts: Mapped[List["Post"]] = relationship(
         "Post", back_populates="user", cascade="all, delete-orphan",
         uselist=True, collection_class=list)
+
     comments: Mapped[List["Comment"]] = relationship(
         "Comment", back_populates="user", cascade="all, delete-orphan",
         uselist=True, collection_class=list)
-    likes: Mapped[List["Like"]] = relationship(
-        "Like", back_populates="user", cascade="all, delete-orphan",
+
+    likes: Mapped[List["PostLike"]] = relationship(
+        "PostLike", back_populates="user", cascade="all, delete-orphan",
         uselist=True, collection_class=list)
 
     following: Mapped[List["Follow"]] = relationship(
@@ -56,7 +58,7 @@ class Post(Base):
     post_date: Mapped[datetime.datetime] = mapped_column(DateTime())
 
     comments: Mapped[List["Comment"]] = relationship("Comment", back_populates="post", cascade='all, delete-orphan')
-    likes: Mapped[List["Like"]] = relationship("Like", back_populates="post", cascade='all, delete-orphan')
+    likes: Mapped[List["PostLike"]] = relationship("PostLike", back_populates="post", cascade='all, delete-orphan')
 
 
 class Comment(Base):
@@ -73,10 +75,14 @@ class Comment(Base):
     content: Mapped[str] = mapped_column(String(300))
     comment_date: Mapped[datetime.datetime] = mapped_column(DateTime())
 
+    likes: Mapped[List["CommentLike"]] = relationship(
+        "CommentLike", back_populates="comment",
+        cascade='all, delete-orphan')
+
 
 @dataclass
-class Like(Base):
-    __tablename__ = 'likes'
+class PostLike(Base):
+    __tablename__ = 'post_likes'
 
     like_id: Mapped[int] = mapped_column(Integer(), primary_key=True)
 
@@ -85,6 +91,21 @@ class Like(Base):
 
     user_id: Mapped[int] = mapped_column(ForeignKey("users.user_id"))
     user: Mapped["User"] = relationship("User", back_populates="likes")
+
+    like_date: Mapped[datetime.datetime] = mapped_column(DateTime())
+
+
+@dataclass
+class CommentLike(Base):
+    __tablename__ = 'comment_likes'
+
+    like_id: Mapped[int] = mapped_column(Integer(), primary_key=True)
+
+    comment_id: Mapped[int] = mapped_column(ForeignKey("comments.comment_id"))
+    comment: Mapped["Comment"] = relationship("Comment", back_populates="likes")
+
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.user_id"))
+    user: Mapped["User"] = relationship("User")
 
     like_date: Mapped[datetime.datetime] = mapped_column(DateTime())
 
