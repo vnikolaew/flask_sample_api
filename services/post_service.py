@@ -1,7 +1,7 @@
 from typing import Optional
 
 import arrow
-from sqlalchemy import Engine
+from sqlalchemy import Engine, func
 
 import pandas as pd
 from db.models import Post, PostLike, Comment, User, CommentLike
@@ -17,11 +17,17 @@ class PostService(ServiceBase):
         return post
 
     def get_post_comments(self, post_id: int):
-        post_comments_query = self.session.query(Comment).where(Comment.post_id == post_id).join(
+        post_comments_query = self.session.query(
+            Comment,
+            func.count(CommentLike.comment_id).label("comment_likes_count")).where(
+            Comment.post_id == post_id).join(
             CommentLike,
-            CommentLike.comment_id == Comment.comment_id)
+            CommentLike.comment_id == Comment.comment_id).group_by(Comment.comment_id)
 
-        post_comments_df = pd.read_sql_query(post_comments_query.statement, self.session.bind)
+        post_comments_df: pd.DataFrame = pd.read_sql_query(
+            post_comments_query.statement,
+            self.session.bind)
+        # post_comments_df.
         comments = post_comments_df.sort_values(
             by=['comment_date'],
             ascending=False).rename(

@@ -1,33 +1,21 @@
 from sqlalchemy import Engine
 
-import __generated__.social_media_pb2 as messages
-from __generated__ import social_media_pb2_grpc
-from services.post_service import PostService
+import __generated__.users_pb2 as messages
+from __generated__ import users_pb2_grpc
+from __generated__.users_pb2_grpc import add_UsersServiceServicer_to_server
 from services.user_service import UserService
 from utils import unix_time_millis
 
 
-class SocialMediaServicer(social_media_pb2_grpc.SocialMediaServicer):
+class UsersServicer(users_pb2_grpc.UsersServiceServicer):
     engine: Engine
 
     def __init__(self, engine: Engine):
         self.engine = engine
 
     def add_to_server(self, server):
-        social_media_pb2_grpc.add_SocialMediaServicer_to_server(self, server)
+        add_UsersServiceServicer_to_server(self, server)
 
-    def GetPost(self, request: messages.GetPostRequest, context):
-        with PostService(self.engine) as post_service:
-            post = post_service.get_post(request.post_id)
-            if post is None:
-                return messages.GetPostResponse(found=False)
-
-            return messages.GetPostResponse(found=True, post=messages.Post(
-                user_id=post.user_id,
-                post_id=post.post_id,
-                post_date_timestamp=unix_time_millis(post.post_date),
-                content=post.content
-            ))
 
     def GetUser(self, request: messages.GetUserRequest, context):
         with UserService(self.engine) as user_service:

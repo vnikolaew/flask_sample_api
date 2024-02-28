@@ -4,9 +4,8 @@ option objc_class_prefix = "RTG";
 
 package social_media;
 
-service SocialMedia {
+service UsersService {
   rpc GetUser(GetUserRequest) returns (GetUserResponse) {}
-  rpc GetPost(GetPostRequest) returns (GetPostResponse) {}
   rpc GetUserSummaries(GetUserSummariesRequest) returns (GetUserSummariesResponse) {}
 }
 
@@ -39,10 +38,6 @@ message GetUserRequest {
   int32 user_id = 1;
 }
 
-message GetPostRequest {
-  int32 post_id = 1;
-}
-
 message User {
   int32 user_id = 1;
   string username = 2;
@@ -52,20 +47,9 @@ message User {
   string bio = 6;
 }
 
-message Post {
-  int32 post_id = 1;
-  int32 user_id = 2;
-  string content = 3;
-  uint64 post_date_timestamp = 4;
-}
 
 message GetUserResponse {
   bool found = 1;
   optional User user = 2;
-}
-
-message GetPostResponse {
-  bool found = 1;
-  optional Post post = 2;
 }
 

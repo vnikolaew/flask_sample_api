@@ -5,7 +5,8 @@ import grpc
 from sqlalchemy import create_engine
 
 from db import Base, DatabaseSeeder
-from grpc_.social_media_servicer import SocialMediaServicer
+from grpc_.posts_servicer import PostsServicer
+from grpc_.users_servicer import UsersServicer
 from utils import get_bool_env_variable
 
 DB_URL = os.environ.get("DB_URL", "sqlite:///social-media.db")
@@ -19,11 +20,13 @@ def run():
     if USE_DB_SEED:
         seed = DatabaseSeeder(engine=engine)
         seed()
-    engine = create_engine(DB_URL, echo=True)
 
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=os.cpu_count()))
-    servicer = SocialMediaServicer(engine=engine)
-    servicer.add_to_server(server)
+    users_servicer = UsersServicer(engine=engine)
+    posts_servicer = PostsServicer(engine=engine)
+
+    users_servicer.add_to_server(server)
+    posts_servicer.add_to_server(server)
 
     port = os.environ.get("PORT", 50051)
 

@@ -11,4 +11,7 @@ if(-not (Test-Path "$rootFolder/$outFolder")) {
     Remove-Item "$rootFolder\$outFolder\*.*"
 }
 
-Invoke-Expression "$pythonExePath -m grpc_tools.protoc -I./protos --python_out=./$outFolder --pyi_out=./$outFolder --grpc_python_out=./$outFolder ./protos/social_media.proto"
+$protoFiles = Get-ChildItem -Path ./protos -Filter *.proto -Recurse -File -Name
+$protoFiles | ForEach-Object {
+    Invoke-Expression "$pythonExePath -m grpc_tools.protoc -I./protos --python_out=./$outFolder --pyi_out=./$outFolder --grpc_python_out=./$outFolder ./protos/$_"
+}

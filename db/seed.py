@@ -44,8 +44,8 @@ def generate_comment(faker: Faker, post: Post, users: list[User]) -> Comment:
 def generate_comment_like(faker: Faker, comment: Comment, users: list[User]) -> CommentLike:
     user_liker = users[randint(0, len(users) - 1)]
     return CommentLike(
-        comment=comment,
-        user_id=user_liker,
+        comment_id=comment.comment_id,
+        user_id=user_liker.user_id,
         like_date=faker.date_between(start_date=comment.comment_date)
     )
 

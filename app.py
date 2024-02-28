@@ -30,4 +30,4 @@ for blueprint in blueprints:
 if __name__ == '__main__':
     context = ssl.SSLContext()
     context.load_cert_chain('certs/cert.pem', 'certs/key.pem')
-    app.run(ssl_context=context, debug=True)
+    app.run(ssl_context=context)
